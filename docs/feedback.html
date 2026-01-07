@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Feedback</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      .feedback-wrap{max-width:720px;margin:40px auto;padding:20px;background:rgba(255,255,255,0.02);border-radius:10px}
+      label{display:block;margin:10px 0 6px;font-weight:600}
+      textarea{min-height:120px}
+      .meta{display:flex;gap:10px}
+      .meta input{flex:1}
+    </style>
+  </head>
+  <body>
+    <main class="feedback-wrap">
+      <h1>Send Feedback</h1>
+      <p>Help improve this portfolio — your thoughts are appreciated.</p>
+      <form id="feedback-form">
+        <div class="meta">
+          <div>
+            <label for="name">Name (optional)</label>
+            <input id="name" name="name" placeholder="Your name" />
+          </div>
+          <div>
+            <label for="email">Email (optional)</label>
+            <input id="email" name="email" placeholder="you@example.com" />
+          </div>
+        </div>
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="What did you like? What can be improved?" required></textarea>
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <button type="submit">Send Feedback</button>
+          <span id="fb-status" class="small"></span>
+        </div>
+      </form>
+      <p class="small" style="margin-top:14px">Thanks — feedback may be used to improve the site.</p>
+    </main>
+
+    <script>
+      document.getElementById('feedback-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const status = document.getElementById('fb-status');
+        status.textContent = '';
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+        if(!message){ status.textContent = 'Please write a message.'; return; }
+        status.textContent = 'Sending…';
+        try{
+          const API_BASE = window.API_BASE || '';
+          const res = await fetch(API_BASE + '/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,message})});
+          const j = await res.json();
+          if(j.ok){ status.textContent = 'Thanks! Feedback saved.'; document.getElementById('feedback-form').reset(); }
+          else status.textContent = 'Failed to submit feedback.';
+        }catch(e){ status.textContent = 'Network error.'; }
+      });
+    </script>
+  </body>
+</html>

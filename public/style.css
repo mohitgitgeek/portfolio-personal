@@ -1,0 +1,62 @@
+.root-fallback, :root{
+  --card:#0b1220; --accent:#7dd3fc; --muted:#94a3b8;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial; color:#e6eef8; background:linear-gradient(90deg, #ff5f6d, #ffc371, #8fd3f4, #a1ff9a); background-size:400% 400%; animation:rainbow 12s ease infinite;}
+.hero{display:flex;gap:20px;padding:28px;align-items:center;max-width:960px;margin:32px auto}
+.photo-wrap{width:160px;height:160px;border-radius:12px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-label{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,0.4);padding:6px 8px;border-radius:6px;font-size:13px;cursor:pointer}
+.photo-label input{display:none}
+.intro h1{margin:0;font-size:28px}
+.intro p{color:var(--muted);max-width:60ch}
+.links{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+.links a{color:var(--accent);text-decoration:none;background:rgba(125,211,252,0.06);padding:8px 10px;border-radius:8px}
+.links a{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;font-weight:600}
+
+/* colorful link variants */
+.links a:nth-child(1){background:linear-gradient(90deg,#FF7A7A22,#FFD27A22);color:#ff6b6b}
+.links a:nth-child(2){background:linear-gradient(90deg,#7AE1FF22,#7AFFC222);color:#0ea5a4}
+.links a:nth-child(3){background:linear-gradient(90deg,#D07AFF22,#FF7AE022);color:#7c3aed}
+.links a:nth-child(4){background:linear-gradient(90deg,#8BD6FF22,#C9A7FF22);color:#2563eb}
+.links a:nth-child(5){background:linear-gradient(90deg,#A1FF9A22,#9AD0FF22);color:#16a34a}
+
+.links a svg{width:18px;height:18px;flex:0 0 18px}
+
+/* floating decorative SVGs */
+.decor{position:fixed;inset:0;pointer-events:none;overflow:visible;z-index:0}
+.decor svg{position:absolute;opacity:0.18;mix-blend-mode:screen}
+.decor .float1{left:-6%;top:10%;width:360px;animation:float 10s ease-in-out infinite}
+.decor .float2{right:-8%;top:30%;width:260px;animation:float 14s ease-in-out infinite;animation-delay:2s}
+.decor .float3{left:20%;bottom:-6%;width:420px;animation:float 18s ease-in-out infinite;animation-delay:4s}
+.decor .float4{right:10%;bottom:10%;width:260px;animation:float 12s ease-in-out infinite;animation-delay:1s}
+.decor .float5{left:6%;top:40%;width:180px;animation:float 16s ease-in-out infinite;animation-delay:3s}
+
+@keyframes float{
+  0%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-24px) rotate(6deg)}
+  100%{transform:translateY(0) rotate(0deg)}
+}
+
+@keyframes rainbow{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* ensure modal and content are above decorations */
+.modal, main, header, .about{position:relative;z-index:2}
+.about{max-width:960px;margin:20px auto;padding:20px;background:rgba(255,255,255,0.02);border-radius:10px}
+.hidden{display:none}
+
+/* modal */
+.modal{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.9),rgba(2,6,23,0.95));display:flex;align-items:center;justify-content:center}
+.modal-content{background:var(--card);padding:24px;border-radius:12px;max-width:420px;width:96%;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+.modal-content h2{margin-top:0}
+#riddle-question{color:var(--accent);margin:12px 0}
+#riddle-answer{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+.buttons{display:flex;gap:8px;margin-top:12px}
+button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+.small{color:var(--muted);margin-top:8px}
+
+@media (max-width:640px){.hero{flex-direction:column;align-items:flex-start;padding:16px}.photo-wrap{width:120px;height:120px}}

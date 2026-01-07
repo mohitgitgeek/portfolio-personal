@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Feedback Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      .admin-wrap{max-width:1000px;margin:28px auto;padding:20px;background:rgba(255,255,255,0.02);border-radius:10px}
+      table{width:100%;border-collapse:collapse}
+      th,td{padding:8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03)}
+      .controls{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+      .pagination{display:inline-flex;gap:6px}
+    </style>
+  </head>
+  <body>
+    <main class="admin-wrap">
+      <h1>Feedback Admin</h1>
+      <div class="controls">
+        <div>
+          <label>Page size
+            <select id="pageSize">
+              <option>10</option>
+              <option selected>20</option>
+              <option>50</option>
+              <option>100</option>
+            </select>
+          </label>
+        </div>
+        <div class="pagination">
+          <button id="prev">Prev</button>
+          <span id="pageInfo"></span>
+          <button id="next">Next</button>
+        </div>
+        <div style="margin-left:auto">
+          <a id="downloadPage" href="#">Download CSV (page)</a>
+          &nbsp;|&nbsp;
+          <a id="downloadAll" href="#">Download CSV (all)</a>
+        </div>
+      </div>
+
+      <table id="fbTable">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Email</th><th>Message</th><th>Created</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </main>
+
+    <script>
+      let page = 1;
+      const pageInfo = document.getElementById('pageInfo');
+      const tbody = document.querySelector('#fbTable tbody');
+      const pageSizeEl = document.getElementById('pageSize');
+      const prev = document.getElementById('prev');
+      const next = document.getElementById('next');
+      const downloadPage = document.getElementById('downloadPage');
+
+      async function load() {
+        const pageSize = parseInt(pageSizeEl.value,10);
+        const API_BASE = window.API_BASE || '';
+        const res = await fetch(API_BASE + `/api/feedbacks?page=${page}&pageSize=${pageSize}`);
+        const j = await res.json();
+        if(!j.ok){ tbody.innerHTML = '<tr><td colspan="5">Failed to load</td></tr>'; return; }
+        tbody.innerHTML = '';
+        for(const f of j.feedbacks){
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${f.id}</td><td>${escapeHtml(f.name)}</td><td>${escapeHtml(f.email)}</td><td>${escapeHtml(f.message)}</td><td>${f.created_at}</td>`;
+          tbody.appendChild(tr);
+        }
+        const totalPages = Math.max(1, Math.ceil(j.total / j.pageSize));
+        pageInfo.textContent = `Page ${j.page} of ${totalPages} — ${j.total} total`;
+        downloadPage.href = API_BASE + `/api/feedbacks.csv?page=${j.page}&pageSize=${j.pageSize}`;
+        document.getElementById('downloadAll').href = API_BASE + '/api/feedbacks.csv?all=true';
+        prev.disabled = j.page <= 1;
+        next.disabled = j.page >= totalPages;
+      }
+
+      function escapeHtml(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+      prev.addEventListener('click', ()=>{ if(page>1){ page--; load(); }});
+      next.addEventListener('click', ()=>{ page++; load(); });
+      pageSizeEl.addEventListener('change', ()=>{ page = 1; load(); });
+
+      load();
+    </script>
+  </body>
+</html>
