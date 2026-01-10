@@ -198,6 +198,14 @@ def config():
     return jsonify({'links': LINKS})
 
 
+# Debug helper: reveal the current riddle answer for local troubleshooting when enabled
+@app.route('/_debug_answer')
+def debug_answer():
+    if os.environ.get('DEBUG_SHOW_ANSWER','0') != '1':
+        return jsonify({'ok': False, 'error': 'disabled'}), 403
+    return jsonify({'ok': True, 'answer': session.get('answer')})
+
+
 if __name__ == '__main__':
     # Create tables if they don't exist (safe with PostgreSQL via SQLAlchemy)
     os.makedirs('data', exist_ok=True)
