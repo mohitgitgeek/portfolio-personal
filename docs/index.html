@@ -16,14 +16,6 @@
           <circle cx="200" cy="200" r="200" />
         </g>
       </svg>
-      <svg class="float4" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="g4" x1="0" x2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset="1" stop-color="#7ae1ff"/></linearGradient>
-        </defs>
-        <g fill="url(#g4)">
-          <circle cx="80" cy="520" r="80" />
-        </g>
-      </svg>
       <svg class="float5" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="g5" x1="0" x2="1"><stop offset="0" stop-color="#ff9ad1"/><stop offset="1" stop-color="#a1ff9a"/></linearGradient>
@@ -63,24 +55,27 @@
     </div>
 
     <main id="main-content" class="hidden">
-      <header>
-        <div class="hero">
-          <div class="photo-wrap">
-            <img id="photo-preview" alt="Your photo" src="" />
-            <label class="photo-label">Add photo
-              <input id="photo-input" type="file" accept="image/*">
-            </label>
-          </div>
-          <div class="intro">
-            <h1>Mohit V S</h1>
-            <p id="description">Hello Connections! My name is Mohit Vuyala and I am a second year B.Tech (AI) student of SRMIST, Kattankulathur + IITM-BS (Data Science) student. I spent my early years in the US, came to India in April 2011 and have been here since then. I am a passionate bibliophile and content curator with a flourishing blog and YouTube channel. I love consuming patriotic, devotional, and current-affairs related content. I started coding in my higher-secondary school years and chose AI, ML and Data Science because of my undying tryst with Mathematics and Statistics. I have worked with a couple of clubs since joining college. Excited to ride along the journey called "life" with you all!</p>
-            <div class="links">
-              <a id="link-projects" target="_blank" title="My Projects">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-                My Projects
-              </a>
-              <a id="link-youtube" target="_blank" title="Watch Tutorials">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><polygon points="9.5,7.5 16.5,12 9.5,16.5" fill="currentColor"></polygon></svg>
-                Watch Tutorials
-              </a>
-*** End Patch
+      <section class="about">
+        <h2>About Me</h2>
+        <p>Write a friendly paragraph about your background, skills, and what you build.</p>
+      </section>
+
+      <section class="certifications">
+        <h2>Certifications</h2>
+        <div class="cert-list">
+          <a class="cert" href="https://www.credly.com/badges/acf3f672-3734-42e6-a9d5-4ff38d089177" target="_blank" rel="noopener noreferrer">
+            <img src="assets/github_foundations_thumb.png" alt="GitHub Foundations badge">
+            <div class="cert-meta">
+              <div class="cert-title">GitHub Foundations</div>
+              <div class="cert-sub">Issued by GitHub — Jan 09, 2025</div>
+            </div>
+          </a>
+          <a class="cert" href="https://www.credly.com/badges/b2771153-9085-4a59-a32c-32f262c814db" target="_blank" rel="noopener noreferrer">
+            <img src="assets/aws_generative_ai_thumb.png" alt="AWS Academy Graduate - Generative AI Foundations badge">
+            <div class="cert-meta">
+              <div class="cert-title">AWS Academy Graduate — Generative AI Foundations</div>
+              <div class="cert-sub">Issued by Amazon Web Services — Oct 28, 2025</div>
+            </div>
+          </a>
+        </div>
+      </section>
