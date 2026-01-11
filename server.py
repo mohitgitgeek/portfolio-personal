@@ -47,74 +47,7 @@ class Feedback(db.Model):
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-
-RIDDLES = [
-    # DSA
-    { 'q': 'What is the time complexity of binary search on a sorted array?', 'a': 'log n' },
-    { 'q': 'What data structure uses LIFO ordering?', 'a': 'stack' },
-    { 'q': 'Which traversal visits root-left-right on a binary tree?', 'a': 'preorder' },
-    { 'q': 'What is the average time complexity of quicksort?', 'a': 'n log n' },
-    { 'q': 'Which data structure supports O(1) average time for insert and lookup?', 'a': 'hash table' },
-
-    # Operating Systems
-    { 'q': 'Which component translates virtual addresses to physical addresses?', 'a': 'mmu' },
-    { 'q': 'What scheduling algorithm assigns the CPU to the shortest next job?', 'a': 'sjf' },
-    { 'q': 'Which synchronization primitive can be used for mutual exclusion?', 'a': 'mutex' },
-
-    # Computer Networks
-    { 'q': 'What does TCP stand for?', 'a': 'transmission control protocol' },
-    { 'q': 'Which protocol is used to get an IP address automatically via DHCP?', 'a': 'dhcp' },
-    { 'q': 'Which layer in the OSI model handles routing between networks?', 'a': 'network' },
-
-    # DBMS
-    { 'q': 'Which SQL command removes a table and its data?', 'a': 'drop table' },
-    { 'q': 'Which normal form eliminates repeating groups and makes a primary key?', 'a': 'first normal form' },
-    { 'q': 'What kind of index allows fast lookup by a key?', 'a': 'b tree' },
-
-    # Mathematics
-    { 'q': 'What is the derivative of x^2?', 'a': '2x' },
-    { 'q': 'What is the value of pi (approx) to two decimal places?', 'a': '3.14' },
-    { 'q': 'What is 7 factorial (7!)?', 'a': '5040' },
-
-    # Machine Learning
-    { 'q': 'Which algorithm is a large-margin classifier often used for classification?', 'a': 'svm' },
-    { 'q': 'What measure is used to evaluate binary classification (area under ROC)?', 'a': 'auc' },
-    { 'q': 'Which optimization method uses gradients to update parameters?', 'a': 'gradient descent' },
-
-    # Logic and Aptitude
-    { 'q': 'If 5 machines take 5 minutes to make 5 widgets, how long does 1 machine take to make 1 widget (minutes)?', 'a': '5' },
-    { 'q': 'I am an odd number. Take away one letter and I become even. What number am I?', 'a': 'seven' },
-    { 'q': 'Find the next number in sequence: 2, 4, 8, 16, ?', 'a': '32' },
-
-    # simple/general
-    { 'q': 'What is 2 + 2?', 'a': '4' },
-    { 'q': 'What is the reverse of "abc"?', 'a': 'cba' }
-]
-
-
-def random_riddle():
-    import random
-    return random.choice(RIDDLES)
-
-
-@app.route('/riddle')
-def riddle():
-    r = random_riddle()
-    session['answer'] = str(r.get('a','')).strip().lower()
-    session['unlocked'] = False
-    return jsonify({'question': r.get('q')})
-
-
-@app.route('/solve', methods=['POST'])
-def solve():
-    guess = (request.json.get('answer','') if request.is_json else request.form.get('answer',''))
-    guess = str(guess).strip().lower()
-    if 'answer' not in session:
-        return jsonify({'ok': False, 'error': 'no-riddle'})
-    if guess == session.get('answer'):
-        session['unlocked'] = True
-        return jsonify({'ok': True})
-    return jsonify({'ok': False})
+# Riddle feature removed: `GET /riddle`, `POST /solve`, and debug helper removed
 
 
 @app.route('/api/feedback', methods=['POST'])
@@ -198,12 +131,8 @@ def config():
     return jsonify({'links': LINKS})
 
 
-# Debug helper: reveal the current riddle answer for local troubleshooting when enabled
-@app.route('/_debug_answer')
-def debug_answer():
-    if os.environ.get('DEBUG_SHOW_ANSWER','0') != '1':
-        return jsonify({'ok': False, 'error': 'disabled'}), 403
-    return jsonify({'ok': True, 'answer': session.get('answer')})
+# Note: debug endpoint removed
+
 
 
 if __name__ == '__main__':

@@ -1,10 +1,3 @@
-async function fetchRiddle(){
-  const API_BASE = window.API_BASE || '';
-  const res = await fetch(API_BASE + '/riddle');
-  if(!res.ok) throw new Error('riddle fetch failed');
-  return res.json();
-}
-
 async function loadConfig(){
   try{
     const API_BASE = window.API_BASE || '';
@@ -15,12 +8,6 @@ async function loadConfig(){
 }
 
 document.addEventListener('DOMContentLoaded', async ()=>{
-  const modal = document.getElementById('riddle-modal');
-  const qEl = document.getElementById('riddle-question');
-  const ansEl = document.getElementById('riddle-answer');
-  const submit = document.getElementById('submit-answer');
-  const refresh = document.getElementById('refresh-riddle');
-  const feedback = document.getElementById('riddle-feedback');
   const main = document.getElementById('main-content');
 
   const links = await loadConfig();
@@ -31,50 +18,16 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   document.getElementById('link-linkedin').href = links.links.linkedin || '#';
   document.getElementById('link-blog').href = links.links.blog || '#';
 
-  async function newRiddle(){
-    feedback.textContent = '';
-    ansEl.value = '';
-    qEl.textContent = 'Loading...';
-    try{
-      const r = await fetchRiddle();
-      qEl.textContent = r.question;
-    }catch(e){
-      qEl.textContent = 'Failed to load riddle';
-    }
-  }
-
-  refresh.addEventListener('click', newRiddle);
-
-  submit.addEventListener('click', async ()=>{
-    const answer = ansEl.value.trim();
-    if(!answer){ feedback.textContent = 'Please type an answer.'; return; }
-    feedback.textContent = 'Checking…';
-    try{
-      const API_BASE = window.API_BASE || '';
-      const res = await fetch(API_BASE + '/solve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({answer})});
-      const j = await res.json();
-      if(j.ok){
-        feedback.textContent = 'Correct — unlocked!';
-        // ensure the overlay is fully removed from layout and accessibility tree
-        modal.setAttribute('aria-hidden', 'true');
-        modal.style.display = 'none';
-        main.classList.remove('hidden');
-        // move focus to main content for accessibility
-        try{ main.querySelector('h1')?.focus(); }catch(e){}
-      }else{
-        feedback.textContent = 'Incorrect — try again or get a new riddle.';
-      }
-    }catch(e){
-      feedback.textContent = 'Network error.';
-    }
-  });
+  // Riddle feature removed; show main content by default
+  if(main) main.style.display = '';
 
   // photo upload local preview + persist to localStorage
   const photoInput = document.getElementById('photo-input');
   const preview = document.getElementById('photo-preview');
   const saved = localStorage.getItem('profile-photo');
   if(saved) preview.src = saved;
-  photoInput.addEventListener('change', ()=>{
+  if(photoInput){
+    photoInput.addEventListener('change', ()=>{
     const f = photoInput.files && photoInput.files[0];
     if(!f) return;
     const reader = new FileReader();
@@ -83,8 +36,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
       localStorage.setItem('profile-photo', reader.result);
     };
     reader.readAsDataURL(f);
-  });
-
-  // start with a riddle; every page load gets a new one
-  await newRiddle();
+    });
+  }
 });
+

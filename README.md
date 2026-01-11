@@ -41,28 +41,8 @@ python server.py
 - Feedback page: http://localhost:3000/feedback.html
 - Admin page: http://localhost:3000/admin.html
 
-Some more featues : 
-- `GET /riddle` returns a short question and stores the answer in the server-side session.
-- `POST /solve` checks the provided answer and unlocks the page for that session.
- 
-Certifications and local assets
- - A `Certifications` section was added to the homepage. Badge thumbnails are stored locally in `public/assets/` to avoid external requests at page load.
- - To (re)generate badge images and thumbnails run:
-
-```powershell
-python scripts/download_badges.py
-```
-
 Dev troubleshooting
- - If the riddle modal doesn't disappear after a correct answer, the server stores the expected answer in the session when you call `GET /riddle`.
- - For local debugging you can enable a debug helper that reveals the current answer by setting the environment variable `DEBUG_SHOW_ANSWER=1` before starting the server. When enabled, visit `/_debug_answer` to see the server-stored answer for your session.
-
-```powershell
-set "DEBUG_SHOW_ANSWER=1"
-python server.py
-# then open http://127.0.0.1:3000/_debug_answer
-```
+- If you experience issues with the UI, check the browser console and the server logs.
 
 Notes
- - The debug endpoint is intended for local troubleshooting only — do not enable it in production.
- - If you prefer, the badge images can be hosted remotely; storing thumbnails locally improves page load and avoids third-party requests.
+- The riddle unlock feature has been removed from this branch. The site now displays main content by default.
