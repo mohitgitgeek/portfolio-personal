@@ -120,8 +120,8 @@ def index():
 # simple config endpoint used by the front-end to populate links
 LINKS = {
     'projects': 'https://github.com/mohitgitgeek',
-    'youtube': 'https://www.youtube.com/c/MohitTheTechGeek/',
-    'instagram': 'https://www.instagram.com/mohitvuyala2021/',
+    'youtube': 'https://www.youtube.com/c/MohitTheTechGeek/null',
+    'instagram': 'https://www.instagram.com/mohitvuyala2021/?hl=en',
     'linkedin': 'https://www.linkedin.com/in/mohit-vuyala/',
     'blog': '/blog.html'
 }

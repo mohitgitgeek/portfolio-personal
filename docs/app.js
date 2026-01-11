@@ -12,11 +12,12 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 
   const links = await loadConfig();
   // populate links
-  document.getElementById('link-projects').href = links.links.projects || '#';
-  document.getElementById('link-youtube').href = links.links.youtube || '#';
-  document.getElementById('link-instagram').href = links.links.instagram || '#';
-  document.getElementById('link-linkedin').href = links.links.linkedin || '#';
-  document.getElementById('link-blog').href = links.links.blog || '#';
+  const setIf = (id, val)=>{ const el = document.getElementById(id); if(el) el.href = val || '#'; };
+  setIf('link-projects', links.links.projects);
+  setIf('link-youtube', links.links.youtube);
+  setIf('link-instagram', links.links.instagram);
+  setIf('link-linkedin', links.links.linkedin);
+  setIf('link-blog', links.links.blog);
 
 
   // Riddle feature removed for docs build

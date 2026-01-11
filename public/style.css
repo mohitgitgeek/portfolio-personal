@@ -6,8 +6,11 @@ body{margin:0;font-family:Inter,Segoe UI,Arial; color:#e6eef8; background:linear
 .hero{display:flex;gap:20px;padding:28px;align-items:center;max-width:960px;margin:32px auto}
 .photo-wrap{width:160px;height:160px;border-radius:12px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
-.photo-label{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,0.4);padding:6px 8px;border-radius:6px;font-size:13px;cursor:pointer}
+.photo-label{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,0.5);padding:6px 8px;border-radius:6px;font-size:13px;cursor:pointer}
 .photo-label input{display:none}
+.intro{max-width:640px}
+.links{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+.links a{color:var(--accent);text-decoration:none;background:rgba(125,211,252,0.06);padding:8px 10px;border-radius:8px;font-weight:700}
 .intro h1{margin:0;font-size:28px}
 .intro p{color:var(--muted);max-width:60ch}
 .links{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
