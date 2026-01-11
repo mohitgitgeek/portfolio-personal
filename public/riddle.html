@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Solve Riddle</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      .riddle-wrap{max-width:720px;margin:48px auto;padding:20px;background:rgba(255,255,255,0.02);border-radius:10px;text-align:center}
+      #riddle-question{font-size:1.2rem;margin:14px 0}
+      #riddle-category{color:var(--muted);font-weight:600}
+      .riddle-actions{display:flex;gap:8px;justify-content:center;margin-top:12px}
+      input[type="text"]{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);min-width:240px}
+    </style>
+  </head>
+  <body>
+    <main class="riddle-wrap">
+      <h1>Solve a quick riddle</h1>
+      <div id="riddle-category">Category: <span id="cat-name">—</span></div>
+      <p id="riddle-question">Loading riddle...</p>
+      <input id="riddle-answer" placeholder="Type your answer" />
+      <div class="riddle-actions">
+        <button id="submit-answer">Submit</button>
+        <button id="refresh-riddle">New riddle</button>
+      </div>
+      <p id="riddle-feedback" class="small"></p>
+      <p class="small" style="margin-top:14px">Solve the riddle to enter the portfolio.</p>
+    </main>
+
+    <script>
+      async function fetchRiddle(){
+        const res = await fetch('/riddle');
+        if(!res.ok) throw new Error('riddle fetch failed');
+        return res.json();
+      }
+      async function submitAnswer(a){
+        const res = await fetch('/solve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({answer:a})});
+        return res.json();
+      }
+
+      document.addEventListener('DOMContentLoaded', async ()=>{
+        const qEl = document.getElementById('riddle-question');
+        const catEl = document.getElementById('cat-name');
+        const ansEl = document.getElementById('riddle-answer');
+        const submit = document.getElementById('submit-answer');
+        const refresh = document.getElementById('refresh-riddle');
+        const feedback = document.getElementById('riddle-feedback');
+
+        async function newRiddle(){
+          feedback.textContent = '';
+          ansEl.value = '';
+          qEl.textContent = 'Loading riddle...';
+          try{
+            const r = await fetchRiddle();
+            qEl.textContent = r.question;
+            catEl.textContent = r.category || '—';
+          }catch(e){ qEl.textContent = 'Failed to load riddle'; }
+        }
+
+        refresh.addEventListener('click', newRiddle);
+        submit.addEventListener('click', async ()=>{
+          const answer = ansEl.value.trim();
+          if(!answer){ feedback.textContent = 'Please type an answer.'; return; }
+          feedback.textContent = 'Checking…';
+          try{
+            const j = await submitAnswer(answer);
+            if(j.ok){ feedback.textContent = 'Correct — redirecting…'; window.location = '/'; }
+            else feedback.textContent = 'Incorrect — try again.';
+          }catch(e){ feedback.textContent = 'Network error.'; }
+        });
+
+        await newRiddle();
+      });
+    </script>
+  </body>
+</html>

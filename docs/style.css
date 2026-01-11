@@ -5,7 +5,7 @@
 
 
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,Segoe UI,Arial; color:#e6eef8; background:linear-gradient(90deg, #ff5f6d, #ffc371, #8fd3f4, #a1ff9a); background-size:400% 400%; animation:rainbow 12s ease infinite;}
+body{margin:0;font-family:Inter,Segoe UI,Arial; color:#e6eef8; background:linear-gradient(90deg, #d64552, #d19a3a, #4f9fc8, #5fae68); background-size:400% 400%; animation:rainbow 12s ease infinite;}
 .hero{display:flex;gap:20px;padding:28px;align-items:center;max-width:960px;margin:32px auto}
 .photo-wrap{width:160px;height:160px;border-radius:12px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
@@ -23,7 +23,7 @@ body{margin:0;font-family:Inter,Segoe UI,Arial; color:#e6eef8; background:linear
 .links a:nth-child(5){background:linear-gradient(90deg,#A1FF9A22,#9AD0FF22);color:#16a34a}
 .links a svg{width:18px;height:18px;flex:0 0 18px}
 .decor{position:fixed;inset:0;pointer-events:none;overflow:visible;z-index:0}
-.decor svg{position:absolute;opacity:0.18;mix-blend-mode:screen}
+.decor svg{position:absolute;opacity:0.12;mix-blend-mode:screen}
 .decor .float1{left:-6%;top:10%;width:360px;animation:float 10s ease-in-out infinite}
 .decor .float2{right:-8%;top:30%;width:260px;animation:float 14s ease-in-out infinite;animation-delay:2s}
 .decor .float3{left:20%;bottom:-6%;width:420px;animation:float 18s ease-in-out infinite;animation-delay:4s}

@@ -49,6 +49,74 @@ class Feedback(db.Model):
 
 # Riddle feature removed: `GET /riddle`, `POST /solve`, and debug helper removed
 
+# --- Riddle feature: restores /riddle and /solve endpoints ---
+# Categories cycle: DSA, OS, DBMS, Networks, Math, Coding, Aptitude
+RIDDLE_CATEGORIES = ['DSA','OS','DBMS','Networks','Math','Coding','Aptitude']
+
+RIDDLES = [
+    { 'cat': 'DSA', 'q': 'What is the time complexity of binary search on a sorted array?', 'a': 'log n' },
+    { 'cat': 'DSA', 'q': 'What data structure uses LIFO ordering?', 'a': 'stack' },
+
+    { 'cat': 'OS', 'q': 'Which component translates virtual addresses to physical addresses?', 'a': 'mmu' },
+    { 'cat': 'OS', 'q': 'What scheduling algorithm assigns the CPU to the shortest next job?', 'a': 'sjf' },
+
+    { 'cat': 'DBMS', 'q': 'Which SQL command removes a table and its data?', 'a': 'drop table' },
+    { 'cat': 'DBMS', 'q': 'What kind of index allows fast lookup by a key?', 'a': 'b tree' },
+
+    { 'cat': 'Networks', 'q': 'What does TCP stand for?', 'a': 'transmission control protocol' },
+    { 'cat': 'Networks', 'q': 'Which protocol is used to get an IP address automatically via DHCP?', 'a': 'dhcp' },
+
+    { 'cat': 'Math', 'q': 'What is 2 + 2?', 'a': '4' },
+    { 'cat': 'Math', 'q': 'What is the value of pi (approx) to two decimal places?', 'a': '3.14' },
+
+    { 'cat': 'Coding', 'q': 'Which data structure supports O(1) average time for insert and lookup?', 'a': 'hash table' },
+    { 'cat': 'Coding', 'q': 'Which traversal visits root-left-right on a binary tree?', 'a': 'preorder' },
+
+    { 'cat': 'Aptitude', 'q': 'I am an odd number. Take away one letter and I become even. What number am I?', 'a': 'seven' },
+    { 'cat': 'Aptitude', 'q': 'If 5 machines take 5 minutes to make 5 widgets, how long does 1 machine take to make 1 widget (minutes)?', 'a': '5' }
+]
+
+import random
+
+def _random_riddle_for_category(cat):
+    pool = [r for r in RIDDLES if r.get('cat')==cat]
+    if not pool:
+        return random.choice(RIDDLES)
+    return random.choice(pool)
+
+
+@app.route('/riddle')
+def riddle():
+    # pick next category in sequence per-session
+    last = session.get('riddle_cat_index', -1)
+    idx = (last + 1) % len(RIDDLE_CATEGORIES)
+    session['riddle_cat_index'] = idx
+    cat = RIDDLE_CATEGORIES[idx]
+    r = _random_riddle_for_category(cat)
+    session['answer'] = str(r.get('a','')).strip().lower()
+    session['unlocked'] = False
+    return jsonify({'question': r.get('q'), 'category': cat})
+
+
+@app.route('/solve', methods=['POST'])
+def solve():
+    guess = (request.json.get('answer','') if request.is_json else request.form.get('answer',''))
+    guess = str(guess).strip().lower()
+    if 'answer' not in session:
+        return jsonify({'ok': False, 'error': 'no-riddle'})
+    if guess == session.get('answer'):
+        session['unlocked'] = True
+        return jsonify({'ok': True})
+    return jsonify({'ok': False})
+
+
+# Debug helper: reveal the current riddle answer for local troubleshooting when enabled
+@app.route('/_debug_answer')
+def debug_answer():
+    if os.environ.get('DEBUG_SHOW_ANSWER','0') != '1':
+        return jsonify({'ok': False, 'error': 'disabled'}), 403
+    return jsonify({'ok': True, 'answer': session.get('answer')})
+
 
 @app.route('/api/feedback', methods=['POST'])
 def submit_feedback():
@@ -115,6 +183,9 @@ def export_csv():
 # Serve index and static files from public/ (Flask static is already configured)
 @app.route('/')
 def index():
+    # require riddle unlock to view the portfolio home
+    if not session.get('unlocked'):
+        return send_from_directory(app.static_folder, 'riddle.html')
     return send_from_directory(app.static_folder, 'index.html')
 
 # simple config endpoint used by the front-end to populate links
