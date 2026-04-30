@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'public/**'
+  workflow_dispatch:
 
 jobs:
   publish-docs:
@@ -21,6 +22,7 @@ jobs:
           rm -rf docs
           mkdir -p docs
           cp -a public/. docs/
+          touch docs/.nojekyll
 
       - name: Commit and push `docs/`
         env:

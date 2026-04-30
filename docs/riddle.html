@@ -5,13 +5,20 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Solve Riddle</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+      .riddle-wrap{max-width:720px;margin:48px auto;padding:20px;background:rgba(255,255,255,0.02);border-radius:10px;text-align:center}
+      #riddle-question{font-size:1.2rem;margin:14px 0}
+      #riddle-category{color:var(--muted);font-weight:600}
+      .riddle-actions{display:flex;gap:8px;justify-content:center;margin-top:12px}
+      input[type="text"]{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);min-width:240px}
+    </style>
   </head>
   <body>
     <main class="riddle-wrap">
       <h1>Solve a quick riddle</h1>
       <div id="riddle-category">Category: <span id="cat-name">—</span></div>
       <p id="riddle-question">Loading riddle...</p>
-      <input id="riddle-answer" placeholder="Type your answer" />
+      <input id="riddle-answer" type="text" placeholder="Type your answer" />
       <div class="riddle-actions">
         <button id="submit-answer">Submit</button>
         <button id="refresh-riddle">New riddle</button>

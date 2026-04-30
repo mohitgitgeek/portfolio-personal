@@ -19,10 +19,10 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   setIf('link-linkedin', links.links.linkedin);
   setIf('link-blog', links.links.blog);
 
-
-  // Riddle feature removed for docs build
+  // Riddle feature removed; show main content by default
   if(main) main.style.display = '';
 
+  // photo upload local preview + persist to localStorage
   const photoInput = document.getElementById('photo-input');
   const preview = document.getElementById('photo-preview');
   const saved = localStorage.getItem('profile-photo');

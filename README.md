@@ -1,4 +1,16 @@
-# Portfolio Riddle — Full‑Stack (Flask) Version
+# Portfolio — Mohit Vuyala
+
+## 🌐 Live GitHub Pages Site
+**URL:** `https://mohitgitgeek.github.io/portfolio-personal/`
+
+### One-time setup (repository owner only)
+1. Go to **Settings → Pages** in this repository.
+2. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
+3. Choose branch **`main`** and folder **`/docs`**, then click **Save**.
+
+The site will be live within ~60 seconds. After that, any push to `public/` automatically syncs `docs/` and re-deploys via the [publish-docs workflow](.github/workflows/publish-docs.yml). You can also trigger it manually from the **Actions** tab → *Publish docs to GitHub Pages* → **Run workflow**.
+
+---
 
 This repository contains a static frontend (originally in `public/`) and a Flask backend (`server.py`) with a feedback system backed by SQL (Postgres recommended; sqlite fallback included). The `docs/` folder is prepared for GitHub Pages hosting of the frontend.
 
