@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 import os
 import io
+import random
 from datetime import datetime
 
 app = Flask(__name__, static_folder='public', static_url_path='/')
@@ -47,9 +48,7 @@ class Feedback(db.Model):
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Riddle feature removed: `GET /riddle`, `POST /solve`, and debug helper removed
-
-# --- Riddle feature: restores /riddle and /solve endpoints ---
+# --- Riddle feature: /riddle and /solve endpoints ---
 # Categories cycle: DSA, OS, DBMS, Networks, Math, Coding, Aptitude
 RIDDLE_CATEGORIES = ['DSA','OS','DBMS','Networks','Math','Coding','Aptitude']
 
@@ -76,7 +75,6 @@ RIDDLES = [
     { 'cat': 'Aptitude', 'q': 'If 5 machines take 5 minutes to make 5 widgets, how long does 1 machine take to make 1 widget (minutes)?', 'a': '5' }
 ]
 
-import random
 
 def _random_riddle_for_category(cat):
     pool = [r for r in RIDDLES if r.get('cat')==cat]
@@ -191,7 +189,7 @@ def index():
 # simple config endpoint used by the front-end to populate links
 LINKS = {
     'projects': 'https://github.com/mohitgitgeek',
-    'youtube': 'https://www.youtube.com/c/MohitTheTechGeek/null',
+    'youtube': 'https://www.youtube.com/c/MohitTheTechGeek/',
     'instagram': 'https://www.instagram.com/mohitvuyala2021/?hl=en',
     'linkedin': 'https://www.linkedin.com/in/mohit-vuyala/',
     'blog': '/blog.html'
@@ -202,7 +200,8 @@ def config():
     return jsonify({'links': LINKS})
 
 
-# Note: debug endpoint removed
+# Note: the /_debug_answer endpoint has been disabled by default (requires DEBUG_SHOW_ANSWER=1)
+# to avoid leaking riddle answers to visitors in production.
 
 
 
@@ -212,4 +211,5 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     port = int(os.environ.get('PORT', '3000'))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    debug = os.environ.get('FLASK_DEBUG', '0') == '1'
+    app.run(host='0.0.0.0', port=port, debug=debug)
