@@ -35,7 +35,7 @@
         <div style="margin-left:auto">
           <a id="downloadPage" href="#">Download CSV (page)</a>
           &nbsp;|&nbsp;
-          <a id="downloadAll" href="#">Download CSV (all)</a>
+          <a id="downloadAll" href="/api/feedbacks.csv?all=true">Download CSV (all)</a>
         </div>
       </div>
 
@@ -71,7 +71,6 @@
         const totalPages = Math.max(1, Math.ceil(j.total / j.pageSize));
         pageInfo.textContent = `Page ${j.page} of ${totalPages} — ${j.total} total`;
         downloadPage.href = API_BASE + `/api/feedbacks.csv?page=${j.page}&pageSize=${j.pageSize}`;
-        document.getElementById('downloadAll').href = API_BASE + '/api/feedbacks.csv?all=true';
         prev.disabled = j.page <= 1;
         next.disabled = j.page >= totalPages;
       }
