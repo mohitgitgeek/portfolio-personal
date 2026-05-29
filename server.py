@@ -181,9 +181,11 @@ def export_csv():
 # Serve index and static files from public/ (Flask static is already configured)
 @app.route('/')
 def index():
-    # require riddle unlock to view the portfolio home
-    if not session.get('unlocked'):
-        return send_from_directory(app.static_folder, 'riddle.html')
+    # The riddle lock screen is now handled client-side in index.html (a fresh
+    # random riddle per session). This keeps behaviour identical whether the site
+    # is served by this backend or statically via GitHub Pages, and avoids a
+    # double lock. The legacy server-side /riddle and /solve endpoints remain
+    # available for API use.
     return send_from_directory(app.static_folder, 'index.html')
 
 # simple config endpoint used by the front-end to populate links

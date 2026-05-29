@@ -16,6 +16,7 @@
         align-items: center;
         justify-content: center;
         z-index: 9999;
+        padding: 1rem;
       }
       #riddleBox {
         background: #161b22;
@@ -25,15 +26,31 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        min-width: 330px;
+        max-width: 480px;
+        width: 100%;
       }
+      #riddleBox .lock-title { font-size: 1.15rem; font-weight: 700; }
+      #riddleCategory {
+        display: inline-block;
+        align-self: flex-start;
+        background: #2ea04333;
+        color: #7ee787;
+        border: 1px solid #2ea04366;
+        padding: 0.2rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      #riddleText { line-height: 1.5; font-size: 1.05rem; }
       #riddleBox input[type=text] {
-        padding: 0.5rem;
+        padding: 0.6rem;
         font-size: 1rem;
         border-radius: 5px;
         border: none;
-        width: 95%;
+        width: 100%;
       }
+      .lock-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
       #riddleBox button {
         background: #2ea043;
         color: #fff;
@@ -42,23 +59,30 @@
         border-radius: 5px;
         cursor: pointer;
         font-size: 1rem;
+        font-weight: 600;
       }
-      #errorMsg {
-        color: #fa4549;
-        min-height: 1em;
-      }
+      #riddleBox button.secondary { background: #30363d; }
+      #riddleBox button:hover { filter: brightness(1.1); }
+      #errorMsg { color: #fa4549; min-height: 1em; }
+      #hintMsg { color: #d8b400; min-height: 1em; font-size: 0.9rem; }
+      .lock-meta { font-size: 0.8rem; color: #8b949e; }
     </style>
   </head>
   <body>
     <div id="lockScreen">
       <div id="riddleBox">
-        <div><strong>Solve this riddle to unlock the portfolio:</strong></div>
-        <div id="riddleText">
-          I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?
-        </div>
+        <div class="lock-title">🔒 Solve a riddle to unlock the portfolio</div>
+        <span id="riddleCategory">Category</span>
+        <div id="riddleText">Loading a riddle…</div>
         <input type="text" id="riddleAnswer" placeholder="Your answer..." autocomplete="off">
-        <button onclick="checkRiddle()">Unlock</button>
+        <div class="lock-actions">
+          <button onclick="checkRiddle()">Unlock</button>
+          <button class="secondary" type="button" onclick="showHint()">Hint</button>
+          <button class="secondary" type="button" onclick="newRiddle()">New riddle</button>
+        </div>
         <div id="errorMsg"></div>
+        <div id="hintMsg"></div>
+        <div class="lock-meta">A fresh random riddle is assigned each session — categories: Math, Logical &amp; Analytical Reasoning, DBMS, OS, Networks, DSA, AI/ML.</div>
       </div>
     </div>
     <div class="decor" aria-hidden="true">
@@ -107,7 +131,7 @@
           <h1>Hello — I'm Mohit</h1>
           <p>Write a friendly paragraph about your background, skills, and what you build.</p>
           <div class="links">
-            <a id="link-blog" href="blog.html" target="_blank" rel="noopener" title="Read Blog">Read Blog</a>
+            <a id="link-blog" href="blog.html" rel="noopener" title="Read &amp; Write Blog">Blog</a>
             <a id="link-linkedin" href="https://www.linkedin.com/in/mohit-vuyala/" target="_blank" rel="noopener" title="LinkedIn">LinkedIn</a>
             <a id="link-youtube" href="https://www.youtube.com/@MohitTheTechGeek" target="_blank" rel="noopener" title="YouTube">YouTube</a>
             <a id="link-instagram" href="https://www.instagram.com/mohitvuyala2021/" target="_blank" rel="noopener" title="Instagram">Instagram</a>
@@ -117,26 +141,137 @@
       </section>
       <section class="about">
         <h2>About Me</h2>
-        <p>Hello Connections! My name is Mohit Vuyala and I am a third year B.Tech (AI) student of SRMIST, Kattankulathur + IITM-BS (Data Science) student. I spent my early years in the US, came t[...]
+        <p>Hello Connections! My name is Mohit Vuyala and I am a third year B.Tech (AI) student of SRMIST, Kattankulathur + IITM-BS (Data Science) student. I spent my early years in the US, came to India, and have been building projects in AI/ML, web, and data science ever since.</p>
       </section>
+
+      <section class="projects" id="projects">
+        <h2>Deployed Projects</h2>
+        <p class="section-sub">A showcase of things I've built and shipped.</p>
+        <div class="project-grid" id="project-grid"></div>
+      </section>
+
+      <section class="youtube" id="youtube">
+        <h2>YouTube Channel</h2>
+        <div class="yt-card" id="yt-card"></div>
+        <div class="yt-videos" id="yt-videos"></div>
+      </section>
+
       <footer class="page-footer">
         <a id="link-feedback" class="feedback-btn" href="feedback.html">Send Feedback</a>
       </footer>
     </main>
+
+    <script src="riddles.js"></script>
+    <script src="content.js"></script>
     <script>
-      // Acceptable riddle answers
-      const riddleAnswer = ['echo'];
+      // ---- Riddle lock screen (per-session random riddle) ----
+      let currentRiddle = null;
+
+      function loadSessionRiddle() {
+        // Reuse the same riddle for this browser session so a refresh doesn't reshuffle.
+        let stored = null;
+        try { stored = JSON.parse(sessionStorage.getItem('riddle')); } catch (e) {}
+        if (!stored || !stored.q) {
+          stored = window.pickRandomRiddle();
+          try { sessionStorage.setItem('riddle', JSON.stringify(stored)); } catch (e) {}
+        }
+        currentRiddle = stored;
+        renderRiddle();
+      }
+
+      function renderRiddle() {
+        document.getElementById('riddleCategory').textContent = currentRiddle.category;
+        document.getElementById('riddleText').textContent = currentRiddle.q;
+        document.getElementById('errorMsg').textContent = '';
+        document.getElementById('hintMsg').textContent = '';
+        document.getElementById('riddleAnswer').value = '';
+      }
+
+      function newRiddle() {
+        currentRiddle = window.pickRandomRiddle();
+        try { sessionStorage.setItem('riddle', JSON.stringify(currentRiddle)); } catch (e) {}
+        renderRiddle();
+        document.getElementById('riddleAnswer').focus();
+      }
+
+      function showHint() {
+        const h = currentRiddle && currentRiddle.hint;
+        document.getElementById('hintMsg').textContent = h ? ('💡 ' + h) : 'No hint available for this one!';
+      }
+
+      function unlock() {
+        document.getElementById('lockScreen').style.display = 'none';
+        try { sessionStorage.setItem('unlocked', '1'); } catch (e) {}
+      }
+
       function checkRiddle() {
-        const userAnswer = document.getElementById('riddleAnswer').value.trim().toLowerCase();
-        if(riddleAnswer.includes(userAnswer)) {
-          document.getElementById('lockScreen').style.display = 'none';
+        const userAnswer = window.normalizeAnswer(document.getElementById('riddleAnswer').value);
+        const accepted = (currentRiddle.a || []).map(window.normalizeAnswer);
+        if (userAnswer && accepted.includes(userAnswer)) {
+          unlock();
         } else {
-          document.getElementById('errorMsg').textContent = 'Incorrect, try again!';
+          document.getElementById('errorMsg').textContent = 'Incorrect, try again! (or use the hint / pick a new riddle)';
         }
       }
-      document.getElementById('riddleAnswer').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') checkRiddle();
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // If already unlocked this session, skip the lock screen.
+        let unlocked = false;
+        try { unlocked = sessionStorage.getItem('unlocked') === '1'; } catch (e) {}
+        if (unlocked) {
+          document.getElementById('lockScreen').style.display = 'none';
+        } else {
+          loadSessionRiddle();
+        }
+        document.getElementById('riddleAnswer').addEventListener('keypress', function (e) {
+          if (e.key === 'Enter') checkRiddle();
+        });
+
+        // ---- Render projects ----
+        const grid = document.getElementById('project-grid');
+        (window.PROJECTS || []).forEach(function (p) {
+          const card = document.createElement('article');
+          card.className = 'project-card';
+          const tags = (p.tags || []).map(function (t) {
+            return '<span class="tag">' + escapeHtml(t) + '</span>';
+          }).join('');
+          let actions = '';
+          if (p.live) actions += '<a class="btn-live" href="' + escapeAttr(p.live) + '" target="_blank" rel="noopener">Live ↗</a>';
+          if (p.code) actions += '<a class="btn-code" href="' + escapeAttr(p.code) + '" target="_blank" rel="noopener">Code</a>';
+          card.innerHTML =
+            '<h3>' + escapeHtml(p.title) + '</h3>' +
+            '<p>' + escapeHtml(p.description) + '</p>' +
+            '<div class="tags">' + tags + '</div>' +
+            '<div class="project-actions">' + actions + '</div>';
+          grid.appendChild(card);
+        });
+
+        // ---- Render YouTube preview ----
+        const yt = window.YOUTUBE || {};
+        const ytCard = document.getElementById('yt-card');
+        ytCard.innerHTML =
+          '<div class="yt-avatar">▶</div>' +
+          '<div class="yt-info">' +
+            '<div class="yt-name">' + escapeHtml(yt.channelName || 'My Channel') + '</div>' +
+            '<div class="yt-handle">' + escapeHtml(yt.handle || '') + '</div>' +
+            '<a class="yt-subscribe" href="' + escapeAttr(yt.channelUrl || '#') + '" target="_blank" rel="noopener">Subscribe on YouTube</a>' +
+          '</div>';
+        const vids = document.getElementById('yt-videos');
+        (yt.featuredVideos || []).forEach(function (id) {
+          const wrap = document.createElement('div');
+          wrap.className = 'yt-embed';
+          wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/' + encodeURIComponent(id) +
+            '" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+          vids.appendChild(wrap);
+        });
       });
+
+      function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+      function escapeAttr(s) { return escapeHtml(s); }
     </script>
     <script src="config.client.js"></script>
     <script src="app.js"></script>

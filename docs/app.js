@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   const main = document.getElementById('main-content');
 
   const links = await loadConfig();
-  // populate links
-  const setIf = (id, val)=>{ const el = document.getElementById(id); if(el) el.href = val || '#'; };
+  // populate links — only override the HTML default when config actually provides a value
+  // (on static hosting like GitHub Pages there is no /config endpoint, so keep the defaults)
+  const setIf = (id, val)=>{ const el = document.getElementById(id); if(el && val) el.href = val; };
   setIf('link-projects', links.links.projects);
   setIf('link-youtube', links.links.youtube);
   setIf('link-instagram', links.links.instagram);
